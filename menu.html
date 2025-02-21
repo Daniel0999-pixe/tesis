@@ -1,0 +1,45 @@
+<!-- menu.html -->
+<div id="menu">
+    <ul>
+        <li onclick="handleSubMenuClick('inicio.php')">
+            <i class="fas fa-home"></i> Inicio
+        </li>
+        <li>
+            <i class="fas fa-database"></i> Mostrar Datos
+            <ul class="submenu">
+                <li onclick="handleSubMenuClick('datos.php')">
+                    <i class="fas fa-file-alt"></i> Mostrar datos de entreno
+                </li>
+                <li onclick="handleSubMenuClick('pre_prueba.php')">
+                    <i class="fas fa-file-alt"></i> Mostrar datos de prueba
+                </li>
+                <li onclick="handleSubMenuClick('datospruebas.php')">
+                    <i class="fas fa-chart-pie"></i> Mostrar resultados de pruebas
+                </li>
+            </ul>
+        </li>
+        <li>
+            <i class="fas fa-robot"></i> Mostrar resultados
+            <ul class="submenu">
+                <li onclick="handleSubMenuClick('resultadostrain.php')">
+                    <i class="fas fa-chart-line"></i> Entrenamientos
+                </li>
+                <li onclick="handleSubMenuClick('resultadopruebas.php')">
+                    <i class="fas fa-chart-pie"></i> Pruebas
+                </li>
+            </ul>
+        </li>
+        <li>
+            <i class="fas fa-search"></i> Búsqueda de resultados por..
+            <ul class="submenu">
+                <li onclick="handleSubMenuClick('buscar.php')">
+                    <i class="fas fa-chalkboard-teacher"></i> Area y rango de notas
+                </li>
+            </ul>
+        </li>
+        <!-- Nueva opción para cerrar sesión -->
+        <li onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </li>
+    </ul>
+</div>

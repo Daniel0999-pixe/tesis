@@ -33,7 +33,7 @@ try {
     // Verificar si el inicio de sesión fue exitoso
     if ($loginSuccessful) {
         // Redirigir a la página deseada si las credenciales son correctas
-        header("Location: xd.php");
+        header("Location: menu.php");
         exit();
     } else {
         // Manejar el error de inicio de sesión
