@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Resultados</title>
+    <script src="functions.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+    <!-- Estilos CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-image: url('LogoUGcolor.png');
+            background-size: 45%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            overflow-y: auto; /* Permitir desplazamiento vertical */
+        }
+
+        #content {
+            background-color: #ffffff;
+            border-radius: 8px;
+            max-width: 100%;
+            padding: 20px;
+            text-align: left;
+            overflow: hidden;
+            transform: translateX(-10%);
+        }
+
+        h2 {
+            text-align: center;
+            color: #113C70;
+            font-size: 16px;
+        }
+
+        #searchForm {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dos columnas */
+            grid-gap: 15px;
+        }
+
+        #searchForm label {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            display: block;
+            color: #113C70;
+        }
+
+        #searchForm input,
+        #searchForm select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        #searchForm button {
+            grid-column: span 2; /* El botón abarca las dos columnas */
+            width: 100%;
+            padding: 10px;
+            background-color: #015DA2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        #searchForm button:hover {
+            background-color: #87b9c7;
+        }
+
+        #tableContainer {
+            max-height: 450px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        th, td {
+            padding: 10px 5px;
+            text-align: left;
+            border: 1px solid #ddd;
+            color: #000000;
+        }
+
+        th {
+            background-color: #015DA2;
+            color: white;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #87b9c7;
+        }
+
+        #menu-container {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            z-index: 1050;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+
+        #downloadButton {
+            background-color: #015DA2;
+            color: white;
+            padding: 6px 12px; /* Hacemos el botón más pequeño ajustando el padding */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em; /* Reducimos el tamaño de la fuente */
+            margin-top: 20px;
+        }
+
+        #downloadButton:hover {
+            background-color: #87b9c7;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu-container"></div>
+
+    <h2>Buscador de Resultados</h2>
+
+    <form id="searchForm">
+        <div>
+            <label for="escenario">Seleccionar Escenario:</label>
+            <select id="escenario" name="escenario">
+                <option value="/tesis/dataframe/modelo1/prueba/resultados_prediccionesM1.xlsx">Modelo 1</option>
+                <option value="/tesis/dataframe/modelo2/prueba/resultados_prediccionesM2.xlsx">Modelo 2</option>
+                <option value="/tesis/dataframe/modelo3/prueba/resultados_prediccionesM3.xlsx">Modelo 3</option>
+                <option value="/tesis/dataframe/modelo4/prueba/resultados_prediccionesM4.xlsx">Modelo 4</option>
+            </select><br><br>
+        </div>
+
+        <div class="input-group">
+            <label for="fieldSelect">Selecciona el área:</label>
+            <select id="fieldSelect">
+                <option value="resultado_tic">TIC</option>
+                <option value="resultado_dic">DIC</option>
+                <option value="resultado_ped">PED</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="minNota">Nota Mínima:</label>
+            <input type="number" id="minNota" name="minNota"><br><br>
+        </div>
+
+        <div>
+            <label for="maxNota">Nota Máxima:</label>
+            <input type="number" id="maxNota" name="maxNota"><br><br>
+        </div>
+
+        <button type="button" onclick="searchNotes()">Buscar</button>
+    </form>
+
+    <div id="tableContainer">
+        <table id="resultTable" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>DOCENTE</th>
+                    <th>MATERIA</th>
+                    <th>AREA</th>
+                    <th>CARRERA</th>
+                    <th>CICLO</th>
+                    <th>RESULTADO</th>
+                    <th>TOTAL PROCESO</th>
+                    <th>ESTADO</th>
+                    <th>SEMAFORO</th>
+                    <th>CURSO RECOMENDADO</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <button id="downloadButton" onclick="downloadResults()">Descargar Excel</button>
+
+    <script>
+        let workbook;
+
+        window.onload = function () {
+            updateExcelFile();
+        };
+
+        async function updateExcelFile() {
+            const selectedFile = document.getElementById('escenario').value;
+            await fetchExcelFile(selectedFile);
+        }
+
+        async function fetchExcelFile(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const buffer = await response.arrayBuffer();
+                workbook = XLSX.read(buffer, { type: 'array' });
+            } catch (error) {
+                console.error("Error al cargar el archivo Excel:", error);
+                alert("No se pudo cargar el archivo Excel: " + error.message);
+            }
+        }
+
+        function searchNotes() {
+            const selectedField = document.getElementById('fieldSelect').value;
+            const minValue = parseFloat(document.getElementById('minNota').value);
+            const maxValue = parseFloat(document.getElementById('maxNota').value);
+            const resultsTableBody = document.getElementById('tableBody');
+            resultsTableBody.innerHTML = '';
+
+            if (!workbook) {
+                alert("El archivo Excel aún no se ha cargado.");
+                return;
+            }
+
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+            const filteredData = jsonData.filter(row => {
+                const noteValue = parseFloat(row[selectedField]);
+                if (!isNaN(minValue) && !isNaN(maxValue)) {
+                    return noteValue >= minValue && noteValue <= maxValue;
+                } else if (!isNaN(minValue)) {
+                    return noteValue >= minValue;
+                } else if (!isNaN(maxValue)) {
+                    return noteValue <= maxValue;
+                } else {
+                    return true;
+                }
+            });
+
+            if (filteredData.length === 0) {
+                alert("No se encontraron resultados.");
+                document.getElementById('downloadButton').style.display = 'none';
+            } else {
+                filteredData.forEach(row => {
+                    const newRow = resultsTableBody.insertRow();
+                    newRow.insertCell(0).innerText = row['ID'] || '';
+                    newRow.insertCell(1).innerText = row['DOCENTE'] || '';
+                    newRow.insertCell(2).innerText = row['MATERIA'] || '';
+                    newRow.insertCell(3).innerText = row['AREA'] || '';
+                    newRow.insertCell(4).innerText = row['CARRERA'] || '';
+                    newRow.insertCell(5).innerText = row['CICLO'] || '';
+                    newRow.insertCell(6).innerText = row[selectedField] || '';
+                    newRow.insertCell(7).innerText = row['total_proceso'] || '';
+                    newRow.insertCell(8).innerText = row['ESTADO'] || '';
+                    newRow.insertCell(9).innerText = row['SEMAFORO'] || '';
+                    newRow.insertCell(10).innerText = row['Curso_recomendado_prediccion'] || '';
+                });
+
+                document.getElementById('downloadButton').style.display = 'block';
+            }
+        }
+
+        function downloadResults() {
+            const data = Array.from(document.querySelectorAll('#tableBody tr')).map(row => {
+                const cells = row.querySelectorAll('td');
+                return {
+                    'ID': cells[0].innerText,
+                    'DOCENTE': cells[1].innerText,
+                    'MATERIA': cells[2].innerText,
+                    'AREA': cells[3].innerText,
+                    'CARRERA': cells[4].innerText,
+                    'CICLO': cells[5].innerText,
+                    'RESULTADO': cells[6].innerText,
+                    'TOTAL PROCESO': cells[7].innerText,
+                    'ESTADO': cells[8].innerText,
+                    'SEMAFORO': cells[9].innerText,
+                    'CURSO RECOMENDADO': cells[10].innerText
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Resultados");
+
+            const selectedFieldDisplayName = document.getElementById('fieldSelect').options[document.getElementById('fieldSelect').selectedIndex].text;
+            const selectedModelDisplayName = document.getElementById('escenario').options[document.getElementById('escenario').selectedIndex].text;
+            const fileName = `resultados_${selectedModelDisplayName}_${selectedFieldDisplayName}.xlsx`;
+
+            XLSX.writeFile(wb, fileName);
+        }
+    </script>
+</body>
+</html>

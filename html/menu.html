@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA DE EVALUACION DE MODELOS DE M.L. PARA PLATAFORMA SECOED V.3</title>
+    <link rel="icon" href="../imagenes/ug.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../html/functions.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('../imagenes/LogoUGcolor.png');
+            background-size: 30%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #menu {
+            width: 200px;
+            background-color: #113C70;
+            color: white;
+            position: fixed;
+            left: -200px;
+            top: 0;
+            height: 100%;
+            transition: left 0.3s;
+        }
+
+        #menu.visible {
+            left: 0;
+        }
+
+        #menu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #menu ul li {
+            padding: 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #015DA2;
+            cursor: pointer;
+        }
+
+        #menu ul li:hover {
+            background-color: white;
+            color: #113C70;
+        }
+
+        .submenu {
+            display: none;
+            padding-left: 10px;
+            background-color: white;
+        }
+
+        .submenu li {
+            color: black;
+            font-size: 13px;
+        }
+
+        .submenu li:hover {
+            background-color: #428ca1;
+        }
+
+        #content {
+            margin-left: 220px;
+            padding: 20px;
+            color: #113C70;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        h1 {
+            text-align:center;
+            color:#113C70;
+            font-size : 36px;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <ul>
+            <li onclick="handleSubMenuClick('menu.html')">
+                <i class="fas fa-home"></i> Inicio
+            </li>
+            <li>
+                <i class="fas fa-database"></i> Mostrar Datos
+                <ul class="submenu">
+                    <li onclick="handleSubMenuClick('datos.html')">
+                        <i class="fas fa-file-alt"></i> Mostrar datos de entreno
+                    </li>
+                    <li onclick="handleSubMenuClick('pre_prueba.html')">
+                        <i class="fas fa-file-alt"></i> Mostrar datos de prueba
+                    </li>
+                    <li onclick="handleSubMenuClick('datosprueba.html')">
+                        <i class="fas fa-chart-pie"></i> Mostrar resultados de pruebas
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <i class="fas fa-robot"></i> Mostrar resultados
+                <ul class="submenu">
+                    <li onclick="handleSubMenuClick('resultadostrain.php')">
+                        <i class="fas fa-chart-line"></i> Entrenamientos
+                    </li>
+                    <li onclick="handleSubMenuClick('resultadopruebas.php')">
+                        <i class="fas fa-chart-pie"></i> Pruebas
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <i class="fas fa-search"></i> Búsqueda de resultados por..
+                <ul class="submenu">
+                    <li onclick="handleSubMenuClick('buscar.html')">
+                        <i class="fas fa-chalkboard-teacher"></i> Area y rango de notas
+                    </li>
+                </ul>
+            </li>
+            <!-- Nueva opción para cerrar sesión -->
+            <li onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </li>
+        </ul>
+    </div>
+    <script src="../html/functions.js"></script> <!-- Ruta actualizada -->
+</body>
+</html>

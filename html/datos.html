@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Resultados</title>
+    <script src="functions.js" defer></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;  /* Centrar horizontalmente */
+            align-items: center;  /* Centrar verticalmente */
+            flex-direction: column;
+            background-image: url('LogoUGcolor.png');
+            background-size: 45%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+
+        #content {
+            background-color: #ffffff;
+            border-radius: 8px;
+            max-width: 100%; /* Aumentar el ancho */
+            padding: 20px;
+            text-align: left;
+            overflow: hidden;
+            transform: translateX(-10%); /* Mover ligeramente hacia la izquierda */
+        }
+
+
+        h2 {
+            text-align: center;
+            color: #113C70;
+            /* Color del título principal */
+            font-size: 16px;
+            /* Tamaño de fuente del título principal */
+        }
+
+        .table-container {
+            max-height: 450px;
+            width: 100%; /* Hacer el contenedor de la tabla 100% del ancho disponible */
+            max-width: 1200px; /* Opcional: establece un ancho máximo para evitar que se expanda demasiado */
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            margin: 25px auto;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            max-width: 100%; /* Limitar el ancho de la tabla */
+            border-collapse: collapse;
+            font-size: 10px; /* Reducir el tamaño del texto */
+        }
+
+        th,
+        td {
+            padding: 10px 5px; /* Reducir el padding para que las celdas sean más pequeñas */
+            text-align: left;
+            border: 1px solid #ddd;
+            color: #000000;
+        }
+
+        th {
+            background-color: #015DA2;
+            color: white;
+            font-size: 14px; /* Puedes ajustar el tamaño de la fuente de los encabezados si es necesario */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Si quieres que las columnas no se expandan demasiado */
+        td, th {
+            min-width: 80px; /* Ancho mínimo de las celdas */
+        }
+
+        tr:hover {
+            background-color :#87b9c7 ; 
+        }
+
+        #menu-container {
+            position: absolute;  /* Asegura que el menú se posicione sobre otros elementos */
+            top: 20px;  /* Ajusta la distancia desde la parte superior */
+            left: 10px;  /* Ajusta la distancia desde la izquierda */
+            z-index: 1050; /* Asegura que el menú esté por encima del contenido */
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="menu-container"></div> <!-- Aquí se insertará el menú -->
+    <div class="header">
+    </div>
+    <div id="content">
+        <h2>Resultados de Evaluación</h2>
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr id="headerRow">
+                        <th>ID</th>
+                        <th>DOCENTE</th>
+                        <th>MATERIA</th>
+                        <th>AREA</th>
+                        <th>CARRERA</th>
+                        <th>CICLO</th>
+                        <th>resultado_tic</th>
+                        <th>agrd_tic</th>
+                        <th>resultado_dic</th>
+                        <th>agrd_dic</th>
+                        <th>resultado_ped</th>
+                        <th>agrd_ped</th>
+                        <th>total_proceso</th>
+                        <th>ESTADO</th>
+                        <th>SEMAFORO</th>
+                        <th>Curso_recomendado</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Los datos se insertarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+
+        fetch('http://localhost/tesis/php/leer_excel.php')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('tableBody');
+
+                if (data.status === "error") { // Si hay un mensaje de error, mostrarlo
+                    const newRow = document.createElement('tr');
+                    const newCell = document.createElement('td');
+                    newCell.textContent = data.message;
+                    newCell.colSpan = 16; // Ocupa todas las columnas para centrar el mensaje.
+                    newRow.appendChild(newCell);
+                    tableBody.appendChild(newRow);
+
+                } else {
+                    tableBody.innerHTML = '';
+
+                    data.data.forEach((row) => {
+                        const newRow = document.createElement('tr');
+                        row.forEach(cell => {
+                            const newCell = document.createElement('td');
+                            newCell.textContent = cell !== null ? cell : ''; // Manejar celdas nulas
+                            newRow.appendChild(newCell);
+                        });
+                        tableBody.appendChild(newRow);
+
+                    });
+                }
+
+            })
+            .catch(error => console.error('Error al cargar los datos:', error));
+    </script>
+</body>
+
+</html>

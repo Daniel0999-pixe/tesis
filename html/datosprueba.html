@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mostrar Imagen y Nota</title>
+    <link rel="icon" href="../imagenes/LogoUGcolor.png">
+    <style>
+        body {
+            overflow-y: auto;
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            background-color: #0C8CB3;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        h2 {
+            text-align: center;
+            color: #113C70;
+            font-size: 16px;
+        }
+
+        .select-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px; /* Limitar el ancho */
+            width: 100%; /* Flexible hasta el ancho máximo */
+            margin-left: auto; /* Centra el contenedor */
+            margin-right: auto; /* Centra el contenedor */
+            font-family: 'Roboto', sans-serif; /* Cambiar la fuente */
+            color: #333333; /* Color del texto */
+        }
+
+        .select-container label {
+            font-size: 18px; /* Tamaño del texto */
+            font-weight: bold; /* Hacer el texto en negrita */
+            color: #113C70; /* Color del texto de la etiqueta */
+            margin-right: 10px; /* Espacio entre el texto y el select */
+        }
+
+        select {
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-left: 10px;
+            min-width: 200px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .contenedor-flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #contenedorImagen {
+            padding: 10px;
+            text-align: center;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.66);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        .nota-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 500px;
+            margin-left: 20px;
+            display: none; /* Asegurarse de que esté oculto inicialmente */
+        }
+
+        .nota-container:hover {
+            transform: scale(1.02);
+        }
+
+        .nota-container h3 {
+            color: #007BFF;
+            background-color: #e7f3ff;
+            padding: 10px;
+            border-radius: 4px;
+            border-bottom: 2px solid #007BFF;
+        }
+
+        .nota-container p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .resultado {
+            font-weight: bold;
+            color: #ff4500;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Visualización de Imagen y Nota</h2>
+
+<div class="select-container">
+    <label for="imagenSelect">Selecciona una Imagen:</label>
+    <select id="imagenSelect" onchange="mostrarImagen()">
+        <option value="">--Selecciona--</option>
+        <option value="/tesis/imagenes/modelo1/prueba/grafico_similitud_M1.png">Escenario 1</option>
+        <option value="/tesis/imagenes/modelo2/prueba/grafico_similitud_M2.png">Escenario 2</option>
+        <option value="/tesis/imagenes/modelo3/prueba/grafico_similitud_M3.png">Escenario 3</option>
+        <option value="/tesis/imagenes/modelo4/prueba/grafico_similitud_M4.png">Escenario 4</option>
+
+    </select>
+</div>
+
+<div class="contenedor-flex">
+    <div id="contenedorImagen" style="display:none;">
+        <img id="imagenSeleccionada" src="" alt="Imagen seleccionada">
+    </div>
+
+    <div class="nota-container" id="notaContainer">
+        <h3>Descripción de la Imagen</h3>
+        <p id="notaTexto"></p>
+    </div>
+</div>
+<div id="menu-container"></div>
+
+<script src="../html/functions.js"></script>
+<script>
+    function mostrarImagen() {
+        var select = document.getElementById("imagenSelect");
+        var imagen = document.getElementById("imagenSeleccionada");
+        var contenedor = document.getElementById("contenedorImagen");
+        var notaContainer = document.getElementById("notaContainer");
+        var notaTexto = document.getElementById("notaTexto");
+        
+        var valorSeleccionado = select.value;
+
+        if (valorSeleccionado) {
+            imagen.src = valorSeleccionado;
+            contenedor.style.display = "block"; // Mostrar imagen
+
+            // Aquí añades las notas correspondientes para cada imagen
+            switch (valorSeleccionado) {
+                case "/tesis/imagenes/modelo1/prueba/grafico_similitud_M1.png":
+                    notaTexto.innerHTML = `
+                        En el análisis de similitud entre los resultados predichos y los resultados reales para el gráfico Comparación M1,
+                        se han obtenido los siguientes porcentajes:<br>
+                        - KNN: <span class="resultado">30.00%</span><br>
+                        - DT (Decision Tree): <span class="resultado">34.40%</span><br>
+                        - RF (Random Forest): <span class="resultado">35.60%</span><br><br>
+                        Los resultados en este escenario no son óptimos. La baja coincidencia entre las predicciones y los resultados reales indica que los modelos utilizados no están logrando capturar adecuadamente la dinámica de los datos.
+                    `;
+                    break;
+                case "/tesis/imagenes/modelo2/prueba/grafico_similitud_M2.png":
+                    notaTexto.innerHTML = `
+                        En el análisis de similitud entre los resultados predichos y los resultados reales para el gráfico Comparación M2,
+                        se han obtenido los siguientes porcentajes:<br>
+                        - KNN: <span class="resultado">24,24%</span><br>
+                        - DT (Decision Tree): <span class="resultado">36,80%</span><br>
+                        - RF (Random Forest): <span class="resultado">38,96%</span><br><br>
+                        En este escenario, los resultados no son óptimos. A pesar de que algunos modelos muestran una ligera mejora, la discrepancia sigue siendo significativa.
+                   ` ;
+                    break;
+                case "/tesis/imagenes/modelo3/prueba/grafico_similitud_M3.png":
+                    notaTexto.innerHTML = `
+                        En el análisis de similitud entre los resultados predichos y los resultados reales para el gráfico Comparación M3,
+                        se han obtenido los siguientes porcentajes:<br>
+                        - KNN: <span class="resultado">32,21%</span><br>
+                        - DT (Decision Tree): <span class="resultado">32,21%</span><br>
+                        - RF (Random Forest): <span class="resultado">35,57%</span><br><br>
+                        Este escenario muestra una ligera mejora en los resultados, pero aún queda espacio para optimizar las predicciones y hacerlas más precisas.
+                    `;
+                    break;
+                case "/tesis/imagenes/modelo4/prueba/grafico_similitud_M4.png":
+                    notaTexto.innerHTML = `
+                        En el análisis de similitud entre los resultados predichos y los resultados reales para el gráfico Comparación M4,
+                        se han obtenido los siguientes porcentajes:<br>
+                        - KNN: <span class="resultado">20,49%</span><br>
+                        - DT (Decision Tree): <span class="resultado">38,52%</span><br>
+                        - RF (Random Forest): <span class="resultado">40,98%</span><br><br>
+                        Aunque los resultados han mostrado algunas mejoras, todavía no son ideales, lo que indica que el modelo necesita ajustes adicionales.
+                    `;
+                    break;
+                default:
+                    notaTexto.innerHTML = "";
+                    break;
+            }
+
+            notaContainer.style.display = "block"; // Mostrar la nota
+        } else {
+            contenedor.style.display = "none"; // Ocultar si no hay selección
+            notaContainer.style.display = "none"; // Ocultar la nota si no hay selección
+        }
+    }
+</script>
+
+</body>
+</html>
