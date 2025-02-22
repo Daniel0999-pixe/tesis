@@ -10,8 +10,7 @@ function handleSubMenuClick(page) {
 
 function logout() {
     localStorage.removeItem('loggedIn'); // Eliminar el estado de inicio de sesión
-    window.location.href = 'index.html'; // Redirigir al inicio de sesión
-}
+    window.location.replace('index.html');}
 
 
 // Mostrar el menú al pasar el cursor por la izquierda de la pantalla
